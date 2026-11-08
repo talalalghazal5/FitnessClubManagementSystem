@@ -1,0 +1,6 @@
+1;Amina Hassan;amina.hassan@example.com;2024-01-10;STANDARD;0;0
+2;Khalid Ali;khalid.ali@example.com;2023-09-15;PREMIUM;TRUE;2
+3;Sara Nasser;sara.nasser@example.com;2024-02-20;STANDARD;2;0
+4;Yousef Omar;yousef.omar@example.com;2023-11-30;PREMIUM;FALSE;1
+5;Ali Ahmed;ali.ahmed@example.com;2025-01-05;STANDARD;0;0
+6;Ali Ahmed;ali.ahmed@example.com;2025-01-05;STANDARD;0;0

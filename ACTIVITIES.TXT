@@ -1,0 +1,5 @@
+1;Strength Basics;60;20;GROUP;Rania Sami;Beginner
+2;HIIT Burn;45;15;GROUP;Omar Fares;Intermediate
+3;Personal Form;90;1;PT;2;50
+4;Mobility Flow;40;12;GROUP;Noor Khalid;Easy
+5;Athletic Coaching;60;1;PT;1;65

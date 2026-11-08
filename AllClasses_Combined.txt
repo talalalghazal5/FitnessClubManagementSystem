@@ -1,0 +1,1193 @@
+=========================================
+FILE: Member.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class Member
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string JoinDate { get; set; } = string.Empty;
+
+        public Member(int id, string name, string email, string joinDate)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+            JoinDate = joinDate;
+        }
+
+        public virtual double CalculateMonthlyFee()
+        {
+            return 0;
+        }
+
+        public virtual void PrintInfo()
+        {
+            Console.WriteLine("Member ID: " + Id);
+            Console.WriteLine("Name: " + Name);
+            Console.WriteLine("Email: " + Email);
+            Console.WriteLine("Join Date: " + JoinDate);
+            Console.WriteLine("Monthly Fee: " + CalculateMonthlyFee().ToString("F2"));
+        }
+    }
+}
+
+
+=========================================
+FILE: StandardMember.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class StandardMember : Member
+    {
+        public int FreezeDaysUsed { get; set; }
+
+        public StandardMember(int id, string name, string email, string joinDate, int freezeDaysUsed)
+            : base(id, name, email, joinDate)
+        {
+            FreezeDaysUsed = freezeDaysUsed;
+        }
+
+        public override double CalculateMonthlyFee()
+        {
+            double fee = 50.0;
+            if (FreezeDaysUsed == 0)
+            {
+                fee = fee - 5.0;
+            }
+
+            return fee;
+        }
+
+        public override void PrintInfo()
+        {
+            Console.WriteLine("Type: STANDARD");
+            Console.WriteLine("Member ID: " + Id);
+            Console.WriteLine("Name: " + Name);
+            Console.WriteLine("Email: " + Email);
+            Console.WriteLine("Join Date: " + JoinDate);
+            Console.WriteLine("Freeze Days Used: " + FreezeDaysUsed);
+            Console.WriteLine("Monthly Fee: " + CalculateMonthlyFee().ToString("F2"));
+        }
+    }
+}
+
+
+=========================================
+FILE: PremiumMember.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class PremiumMember : Member
+    {
+        public bool HasPersonalTrainer { get; set; }
+        public int GuestPasses { get; set; }
+
+        public PremiumMember(int id, string name, string email, string joinDate, bool hasPersonalTrainer, int guestPasses)
+            : base(id, name, email, joinDate)
+        {
+            HasPersonalTrainer = hasPersonalTrainer;
+            GuestPasses = guestPasses;
+        }
+
+        public override double CalculateMonthlyFee()
+        {
+            double fee = 100.0;
+            fee = fee + (10.0 * GuestPasses);
+
+            if (HasPersonalTrainer == true)
+            {
+                fee = fee + 40.0;
+            }
+
+            return fee;
+        }
+
+        public override void PrintInfo()
+        {
+            Console.WriteLine("Type: PREMIUM");
+            Console.WriteLine("Member ID: " + Id);
+            Console.WriteLine("Name: " + Name);
+            Console.WriteLine("Email: " + Email);
+            Console.WriteLine("Join Date: " + JoinDate);
+            Console.WriteLine("Has Personal Trainer: " + HasPersonalTrainer);
+            Console.WriteLine("Guest Passes: " + GuestPasses);
+            Console.WriteLine("Monthly Fee: " + CalculateMonthlyFee().ToString("F2"));
+        }
+    }
+}
+
+
+=========================================
+FILE: Activity.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class Activity
+    {
+        public int ActivityId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int DurationMinutes { get; set; }
+        public int Capacity { get; set; }
+
+        public Activity(int activityId, string name, int durationMinutes, int capacity)
+        {
+            ActivityId = activityId;
+            Name = name;
+            DurationMinutes = durationMinutes;
+            Capacity = capacity;
+        }
+
+        public virtual double CalculateSessionCost()
+        {
+            return 0;
+        }
+
+        public virtual void PrintInfo()
+        {
+            Console.WriteLine("Activity ID: " + ActivityId);
+            Console.WriteLine("Name: " + Name);
+            Console.WriteLine("Duration (minutes): " + DurationMinutes);
+            Console.WriteLine("Capacity: " + Capacity);
+            Console.WriteLine("Session Cost: " + CalculateSessionCost().ToString("F2"));
+        }
+    }
+}
+
+
+=========================================
+FILE: GroupClass.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class GroupClass : Activity
+    {
+        public string InstructorName { get; set; } = string.Empty;
+        public string DifficultyLevel { get; set; } = string.Empty;
+
+        public GroupClass(int activityId, string name, int durationMinutes, int capacity, string instructorName, string difficultyLevel)
+            : base(activityId, name, durationMinutes, capacity)
+        {
+            InstructorName = instructorName;
+            DifficultyLevel = difficultyLevel;
+        }
+
+        public override double CalculateSessionCost()
+        {
+            return 0;
+        }
+
+        public override void PrintInfo()
+        {
+            Console.WriteLine("Type: GROUP");
+            Console.WriteLine("Activity ID: " + ActivityId);
+            Console.WriteLine("Name: " + Name);
+            Console.WriteLine("Duration (minutes): " + DurationMinutes);
+            Console.WriteLine("Capacity: " + Capacity);
+            Console.WriteLine("Instructor: " + InstructorName);
+            Console.WriteLine("Difficulty: " + DifficultyLevel);
+            Console.WriteLine("Session Cost: " + CalculateSessionCost().ToString("F2"));
+        }
+    }
+}
+
+
+=========================================
+FILE: PersonalTrainingSession.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class PersonalTrainingSession : Activity
+    {
+        public int TrainerId { get; set; }
+        public double HourlyRate { get; set; }
+
+        public PersonalTrainingSession(int activityId, string name, int durationMinutes, int capacity, int trainerId, double hourlyRate)
+            : base(activityId, name, durationMinutes, capacity)
+        {
+            TrainerId = trainerId;
+            HourlyRate = hourlyRate;
+        }
+
+        public override double CalculateSessionCost()
+        {
+            double hours = DurationMinutes / 60.0;
+            return HourlyRate * hours;
+        }
+
+        public override void PrintInfo()
+        {
+            Console.WriteLine("Type: PT");
+            Console.WriteLine("Activity ID: " + ActivityId);
+            Console.WriteLine("Name: " + Name);
+            Console.WriteLine("Duration (minutes): " + DurationMinutes);
+            Console.WriteLine("Capacity: " + Capacity);
+            Console.WriteLine("Trainer ID: " + TrainerId);
+            Console.WriteLine("Hourly Rate: " + HourlyRate.ToString("F2"));
+            Console.WriteLine("Session Cost: " + CalculateSessionCost().ToString("F2"));
+        }
+    }
+}
+
+
+=========================================
+FILE: Trainer.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class Trainer
+    {
+        public const int MAX_SESSIONS = 20;
+
+        public int TrainerId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Specialty { get; set; } = string.Empty;
+        public double Salary { get; set; }
+        public PersonalTrainingSession[] SessionsAssigned { get; set; }
+        public int SessionCount { get; set; }
+
+        public Trainer(int trainerId, string name, string specialty, double salary)
+        {
+            TrainerId = trainerId;
+            Name = name;
+            Specialty = specialty;
+            Salary = salary;
+            SessionsAssigned = new PersonalTrainingSession[MAX_SESSIONS];
+            SessionCount = 0;
+        }
+
+        public void AssignSession(PersonalTrainingSession session)
+        {
+            if (SessionCount < MAX_SESSIONS)
+            {
+                SessionsAssigned[SessionCount] = session;
+                SessionCount = SessionCount + 1;
+            }
+        }
+
+        public void PrintInfo()
+        {
+            Console.WriteLine("Trainer ID: " + TrainerId);
+            Console.WriteLine("Name: " + Name);
+            Console.WriteLine("Specialty: " + Specialty);
+            Console.WriteLine("Salary: " + Salary.ToString("F2"));
+            Console.WriteLine("Assigned PT Sessions: " + SessionCount);
+            for (int i = 0; i < SessionCount; i = i + 1)
+            {
+                if (SessionsAssigned[i] != null)
+                {
+                    Console.WriteLine("   Session " + (i + 1) + ": " + SessionsAssigned[i].Name + " (Activity ID: " + SessionsAssigned[i].ActivityId + ")");
+                }
+            }
+        }
+    }
+}
+
+
+=========================================
+FILE: Booking.cs
+=========================================
+namespace FitnessClubManagementSystem
+{
+    public class Booking
+    {
+        public int BookingId { get; set; }
+        public int MemberId { get; set; }
+        public int ActivityId { get; set; }
+        public string Date { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+
+        public Booking(int bookingId, int memberId, int activityId, string date, string status)
+        {
+            BookingId = bookingId;
+            MemberId = memberId;
+            ActivityId = activityId;
+            Date = date;
+            Status = status;
+        }
+
+        public void PrintInfo()
+        {
+            Console.WriteLine("Booking ID: " + BookingId);
+            Console.WriteLine("Member ID: " + MemberId);
+            Console.WriteLine("Activity ID: " + ActivityId);
+            Console.WriteLine("Date: " + Date);
+            Console.WriteLine("Status: " + Status);
+        }
+    }
+}
+
+
+=========================================
+FILE: ClubStaff.cs
+=========================================
+#pragma warning disable CS8603
+
+namespace FitnessClubManagementSystem
+{
+    public class ClubStaff
+    {
+        public const int MAX_MEMBERS = 50;
+        public const int MAX_ACTIVITIES = 50;
+        public const int MAX_TRAINERS = 50;
+        public const int MAX_BOOKINGS = 50;
+
+        public int StaffId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Position { get; set; } = string.Empty;
+
+        public Member[] Members { get; set; }
+        public Activity[] Activities { get; set; }
+        public Trainer[] Trainers { get; set; }
+        public Booking[] Bookings { get; set; }
+        public int MemberCount { get; set; }
+        public int ActivityCount { get; set; }
+        public int TrainerCount { get; set; }
+        public int BookingCount { get; set; }
+
+        public ClubStaff(int staffId, string name, string position)
+        {
+            StaffId = staffId;
+            Name = name;
+            Position = position;
+            Members = new Member[MAX_MEMBERS];
+            Activities = new Activity[MAX_ACTIVITIES];
+            Trainers = new Trainer[MAX_TRAINERS];
+            Bookings = new Booking[MAX_BOOKINGS];
+        }
+
+        public void AddMember(Member member)
+        {
+            if (MemberCount < MAX_MEMBERS)
+            {
+                Members[MemberCount] = member;
+                MemberCount = MemberCount + 1;
+            }
+        }
+
+        public void AddActivity(Activity activity)
+        {
+            if (ActivityCount < MAX_ACTIVITIES)
+            {
+                Activities[ActivityCount] = activity;
+                ActivityCount = ActivityCount + 1;
+            }
+        }
+
+        public void AddTrainer(Trainer trainer)
+        {
+            if (TrainerCount < MAX_TRAINERS)
+            {
+                Trainers[TrainerCount] = trainer;
+                TrainerCount = TrainerCount + 1;
+            }
+        }
+
+        public void AddBooking(Booking booking)
+        {
+            if (BookingCount < MAX_BOOKINGS)
+            {
+                Bookings[BookingCount] = booking;
+                BookingCount = BookingCount + 1;
+            }
+        }
+
+        public void ShowAllMembers()
+        {
+            Console.WriteLine("\n--- Members ---");
+            if (MemberCount == 0)
+            {
+                Console.WriteLine("No members available.");
+                return;
+            }
+
+            for (int i = 0; i < MemberCount; i = i + 1)
+            {
+                Members[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowAllActivities()
+        {
+            Console.WriteLine("\n--- Activities ---");
+            if (ActivityCount == 0)
+            {
+                Console.WriteLine("No activities available.");
+                return;
+            }
+
+            for (int i = 0; i < ActivityCount; i = i + 1)
+            {
+                Activities[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowAllTrainers()
+        {
+            Console.WriteLine("\n--- Trainers ---");
+            if (TrainerCount == 0)
+            {
+                Console.WriteLine("No trainers available.");
+                return;
+            }
+
+            for (int i = 0; i < TrainerCount; i = i + 1)
+            {
+                Trainers[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowAllBookings()
+        {
+            Console.WriteLine("\n--- Bookings ---");
+            if (BookingCount == 0)
+            {
+                Console.WriteLine("No bookings available.");
+                return;
+            }
+
+            for (int i = 0; i < BookingCount; i = i + 1)
+            {
+                Bookings[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public Member FindMemberById(int id)
+        {
+            for (int i = 0; i < MemberCount; i = i + 1)
+            {
+                if (Members[i] != null && Members[i].Id == id)
+                {
+                    return Members[i];
+                }
+            }
+
+            return null;
+        }
+
+        public Activity FindActivityById(int id)
+        {
+            for (int i = 0; i < ActivityCount; i = i + 1)
+            {
+                if (Activities[i] != null && Activities[i].ActivityId == id)
+                {
+                    return Activities[i];
+                }
+            }
+
+            return null;
+        }
+    }
+}
+
+
+=========================================
+FILE: FitnessClubSystem.cs
+=========================================
+#pragma warning disable CS8603
+
+namespace FitnessClubManagementSystem
+{
+    public class FitnessClubSystem
+    {
+        public const int MAX_SIZE = 50;
+
+        public Member[] Members { get; set; }
+        public Activity[] Activities { get; set; }
+        public Trainer[] Trainers { get; set; }
+        public Booking[] Bookings { get; set; }
+        public int MemberCount { get; set; }
+        public int ActivityCount { get; set; }
+        public int TrainerCount { get; set; }
+        public int BookingCount { get; set; }
+
+        public FitnessClubSystem()
+        {
+            Members = new Member[MAX_SIZE];
+            Activities = new Activity[MAX_SIZE];
+            Trainers = new Trainer[MAX_SIZE];
+            Bookings = new Booking[MAX_SIZE];
+        }
+
+        public void AddMember(Member member)
+        {
+            if (MemberCount < MAX_SIZE)
+            {
+                Members[MemberCount] = member;
+                MemberCount = MemberCount + 1;
+            }
+        }
+
+        public void AddActivity(Activity activity)
+        {
+            if (ActivityCount < MAX_SIZE)
+            {
+                Activities[ActivityCount] = activity;
+                ActivityCount = ActivityCount + 1;
+            }
+        }
+
+        public void AddTrainer(Trainer trainer)
+        {
+            if (TrainerCount < MAX_SIZE)
+            {
+                Trainers[TrainerCount] = trainer;
+                TrainerCount = TrainerCount + 1;
+            }
+        }
+
+        public void AddBooking(Booking booking)
+        {
+            if (BookingCount < MAX_SIZE)
+            {
+                Bookings[BookingCount] = booking;
+                BookingCount = BookingCount + 1;
+            }
+        }
+
+        public void ShowAllMembers()
+        {
+            Console.WriteLine("\n--- Members ---");
+            for (int i = 0; i < MemberCount; i = i + 1)
+            {
+                Members[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowAllActivities()
+        {
+            Console.WriteLine("\n--- Activities ---");
+            for (int i = 0; i < ActivityCount; i = i + 1)
+            {
+                Activities[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowAllTrainers()
+        {
+            Console.WriteLine("\n--- Trainers ---");
+            for (int i = 0; i < TrainerCount; i = i + 1)
+            {
+                Trainers[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowAllBookings()
+        {
+            Console.WriteLine("\n--- Bookings ---");
+            for (int i = 0; i < BookingCount; i = i + 1)
+            {
+                Bookings[i].PrintInfo();
+                Console.WriteLine();
+            }
+        }
+
+        public Member FindMemberById(int id)
+        {
+            for (int i = 0; i < MemberCount; i = i + 1)
+            {
+                if (Members[i] != null && Members[i].Id == id)
+                {
+                    return Members[i];
+                }
+            }
+
+            return null;
+        }
+
+        public Activity FindActivityById(int id)
+        {
+            for (int i = 0; i < ActivityCount; i = i + 1)
+            {
+                if (Activities[i] != null && Activities[i].ActivityId == id)
+                {
+                    return Activities[i];
+                }
+            }
+
+            return null;
+        }
+
+        public void LinkTrainerSessions()
+        {
+            for (int i = 0; i < TrainerCount; i = i + 1)
+            {
+                Trainers[i].SessionCount = 0;
+            }
+
+            for (int i = 0; i < ActivityCount; i = i + 1)
+            {
+                if (Activities[i] is PersonalTrainingSession)
+                {
+                    PersonalTrainingSession session = (PersonalTrainingSession)Activities[i];
+                    for (int j = 0; j < TrainerCount; j = j + 1)
+                    {
+                        if (Trainers[j] != null && Trainers[j].TrainerId == session.TrainerId)
+                        {
+                            Trainers[j].AssignSession(session);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public double GetProjectedMonthlyRevenue()
+        {
+            double total = 0.0;
+            for (int i = 0; i < MemberCount; i = i + 1)
+            {
+                if (Members[i] != null)
+                {
+                    total = total + Members[i].CalculateMonthlyFee();
+                }
+            }
+
+            return total;
+        }
+    }
+}
+
+
+=========================================
+FILE: FileManager.cs
+=========================================
+using System.Globalization;
+
+namespace FitnessClubManagementSystem
+{
+    public class FileManager
+    {
+        public void LoadMembers(FitnessClubSystem system)
+        {
+            if (File.Exists("MEMBERS.TXT") == false)
+            {
+                return;
+            }
+
+            string[] lines = File.ReadAllLines("MEMBERS.TXT");
+            for (int i = 0; i < lines.Length; i = i + 1)
+            {
+                string line = lines[i].Trim();
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                string[] parts = line.Split(';');
+                if (parts.Length < 7)
+                {
+                    continue;
+                }
+
+                int id = int.Parse(parts[0], CultureInfo.InvariantCulture);
+                string name = parts[1];
+                string email = parts[2];
+                string joinDate = parts[3];
+                string type = parts[4].Trim();
+
+                if (type == "STANDARD")
+                {
+                    int freezeDays = 0;
+                    int.TryParse(parts[5], out freezeDays);
+                    StandardMember member = new StandardMember(id, name, email, joinDate, freezeDays);
+                    system.AddMember(member);
+                }
+                else if (type == "PREMIUM")
+                {
+                    bool hasTrainer = false;
+                    bool.TryParse(parts[5], out hasTrainer);
+                    int guestPasses = 0;
+                    int.TryParse(parts[6], out guestPasses);
+                    PremiumMember member = new PremiumMember(id, name, email, joinDate, hasTrainer, guestPasses);
+                    system.AddMember(member);
+                }
+            }
+        }
+
+        public void LoadActivities(FitnessClubSystem system)
+        {
+            if (File.Exists("ACTIVITIES.TXT") == false)
+            {
+                return;
+            }
+
+            string[] lines = File.ReadAllLines("ACTIVITIES.TXT");
+            for (int i = 0; i < lines.Length; i = i + 1)
+            {
+                string line = lines[i].Trim();
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                string[] parts = line.Split(';');
+                if (parts.Length < 7)
+                {
+                    continue;
+                }
+
+                int activityId = int.Parse(parts[0], CultureInfo.InvariantCulture);
+                string name = parts[1];
+                int duration = int.Parse(parts[2], CultureInfo.InvariantCulture);
+                int capacity = int.Parse(parts[3], CultureInfo.InvariantCulture);
+                string type = parts[4].Trim();
+
+                if (type == "GROUP")
+                {
+                    string instructorName = parts[5];
+                    string difficultyLevel = parts[6];
+                    GroupClass activity = new GroupClass(activityId, name, duration, capacity, instructorName, difficultyLevel);
+                    system.AddActivity(activity);
+                }
+                else if (type == "PT")
+                {
+                    int trainerId = int.Parse(parts[5], CultureInfo.InvariantCulture);
+                    double hourlyRate = double.Parse(parts[6], CultureInfo.InvariantCulture);
+                    PersonalTrainingSession activity = new PersonalTrainingSession(activityId, name, duration, capacity, trainerId, hourlyRate);
+                    system.AddActivity(activity);
+                }
+            }
+        }
+
+        public void LoadTrainers(FitnessClubSystem system)
+        {
+            if (File.Exists("TRAINERS.TXT") == false)
+            {
+                return;
+            }
+
+            string[] lines = File.ReadAllLines("TRAINERS.TXT");
+            for (int i = 0; i < lines.Length; i = i + 1)
+            {
+                string line = lines[i].Trim();
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                string[] parts = line.Split(';');
+                if (parts.Length < 4)
+                {
+                    continue;
+                }
+
+                int trainerId = int.Parse(parts[0], CultureInfo.InvariantCulture);
+                string name = parts[1];
+                string specialty = parts[2];
+                double salary = double.Parse(parts[3], CultureInfo.InvariantCulture);
+                Trainer trainer = new Trainer(trainerId, name, specialty, salary);
+                system.AddTrainer(trainer);
+            }
+
+            system.LinkTrainerSessions();
+        }
+
+        public void LoadBookings(FitnessClubSystem system)
+        {
+            if (File.Exists("BOOKINGS.TXT") == false)
+            {
+                return;
+            }
+
+            string[] lines = File.ReadAllLines("BOOKINGS.TXT");
+            for (int i = 0; i < lines.Length; i = i + 1)
+            {
+                string line = lines[i].Trim();
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                string[] parts = line.Split(';');
+                if (parts.Length < 5)
+                {
+                    continue;
+                }
+
+                int bookingId = int.Parse(parts[0], CultureInfo.InvariantCulture);
+                int memberId = int.Parse(parts[1], CultureInfo.InvariantCulture);
+                int activityId = int.Parse(parts[2], CultureInfo.InvariantCulture);
+                string date = parts[3];
+                string status = parts[4];
+                Booking booking = new Booking(bookingId, memberId, activityId, date, status);
+                system.AddBooking(booking);
+            }
+        }
+
+        public void SaveMember(Member member)
+        {
+            using (StreamWriter writer = new StreamWriter("MEMBERS.TXT", true))
+            {
+                if (member is StandardMember)
+                {
+                    StandardMember standard = (StandardMember)member;
+                    writer.WriteLine(standard.Id + ";" + standard.Name + ";" + standard.Email + ";" + standard.JoinDate + ";STANDARD;" + standard.FreezeDaysUsed + ";0");
+                }
+                else if (member is PremiumMember)
+                {
+                    PremiumMember premium = (PremiumMember)member;
+                    string personalTrainerText = premium.HasPersonalTrainer ? "TRUE" : "FALSE";
+                    writer.WriteLine(premium.Id + ";" + premium.Name + ";" + premium.Email + ";" + premium.JoinDate + ";PREMIUM;" + personalTrainerText + ";" + premium.GuestPasses);
+                }
+            }
+        }
+
+        public void SaveActivity(Activity activity)
+        {
+            using (StreamWriter writer = new StreamWriter("ACTIVITIES.TXT", true))
+            {
+                if (activity is GroupClass)
+                {
+                    GroupClass group = (GroupClass)activity;
+                    writer.WriteLine(group.ActivityId + ";" + group.Name + ";" + group.DurationMinutes + ";" + group.Capacity + ";GROUP;" + group.InstructorName + ";" + group.DifficultyLevel);
+                }
+                else if (activity is PersonalTrainingSession)
+                {
+                    PersonalTrainingSession session = (PersonalTrainingSession)activity;
+                    writer.WriteLine(session.ActivityId + ";" + session.Name + ";" + session.DurationMinutes + ";" + session.Capacity + ";PT;" + session.TrainerId + ";" + session.HourlyRate.ToString("F2", CultureInfo.InvariantCulture));
+                }
+            }
+        }
+
+        public void SaveTrainer(Trainer trainer)
+        {
+            using (StreamWriter writer = new StreamWriter("TRAINERS.TXT", true))
+            {
+                writer.WriteLine(trainer.TrainerId + ";" + trainer.Name + ";" + trainer.Specialty + ";" + trainer.Salary.ToString("F2", CultureInfo.InvariantCulture));
+            }
+        }
+
+        public void SaveBooking(Booking booking)
+        {
+            using (StreamWriter writer = new StreamWriter("BOOKINGS.TXT", true))
+            {
+                writer.WriteLine(booking.BookingId + ";" + booking.MemberId + ";" + booking.ActivityId + ";" + booking.Date + ";" + booking.Status);
+            }
+        }
+    }
+}
+
+
+=========================================
+FILE: Program.cs
+=========================================
+#pragma warning disable CS8600
+
+using System;
+
+namespace FitnessClubManagementSystem
+{
+    public class Program
+    {
+        static void DisplayMenu()
+        {
+            try
+            {
+                Console.Clear();
+            }
+            catch
+            {
+            }
+
+            Console.WriteLine("===========================================");
+            Console.WriteLine("Fitness Club Management System");
+            Console.WriteLine("===========================================");
+            Console.WriteLine("1) Show All Members");
+            Console.WriteLine("2) Show All Activities");
+            Console.WriteLine("3) Show All Trainers");
+            Console.WriteLine("4) Show All Bookings");
+            Console.WriteLine("5) Find Member by ID");
+            Console.WriteLine("6) Find Activity by ID");
+            Console.WriteLine("7) Add New Member");
+            Console.WriteLine("8) Add New Activity");
+            Console.WriteLine("9) Add New Trainer");
+            Console.WriteLine("10) Add New Booking");
+            Console.WriteLine("11) Show Projected Monthly Revenue");
+            Console.WriteLine("0) Exit");
+            Console.WriteLine("===========================================");
+            Console.Write("Select an option: ");
+        }
+
+        static string ReadText(string prompt)
+        {
+            Console.Write(prompt);
+            string text = Console.ReadLine();
+            if (text == null)
+            {
+                return string.Empty;
+            }
+
+            return text.Trim();
+        }
+
+        static int ReadInt(string prompt)
+        {
+            while (true)
+            {
+                string input = ReadText(prompt);
+                int result;
+                if (int.TryParse(input, out result))
+                {
+                    return result;
+                }
+
+                Console.WriteLine("Invalid integer. Please try again.");
+            }
+        }
+
+        static double ReadDouble(string prompt)
+        {
+            while (true)
+            {
+                string input = ReadText(prompt);
+                double result;
+                if (double.TryParse(input, out result))
+                {
+                    return result;
+                }
+
+                Console.WriteLine("Invalid number. Please try again.");
+            }
+        }
+
+        static bool ReadYesNo(string prompt)
+        {
+            while (true)
+            {
+                string input = ReadText(prompt).ToUpper();
+                if (input == "Y" || input == "YES")
+                {
+                    return true;
+                }
+
+                if (input == "N" || input == "NO")
+                {
+                    return false;
+                }
+
+                Console.WriteLine("Please enter Y or N.");
+            }
+        }
+
+        static void Pause()
+        {
+            try
+            {
+                Console.WriteLine("Press Enter to continue...");
+                Console.ReadLine();
+            }
+            catch
+            {
+            }
+        }
+
+        static void Main()
+        {
+            FitnessClubSystem system = new FitnessClubSystem();
+            ClubStaff staff = new ClubStaff(1, "Sara Manager", "Operations");
+            FileManager fileManager = new FileManager();
+
+            fileManager.LoadMembers(system);
+            fileManager.LoadActivities(system);
+            fileManager.LoadTrainers(system);
+            fileManager.LoadBookings(system);
+            system.LinkTrainerSessions();
+
+            bool isRunning = true;
+            while (isRunning)
+            {
+                DisplayMenu();
+                int option = ReadInt(string.Empty);
+
+                switch (option)
+                {
+                    case 1:
+                        system.ShowAllMembers();
+                        Pause();
+                        break;
+
+                    case 2:
+                        system.ShowAllActivities();
+                        Pause();
+                        break;
+
+                    case 3:
+                        system.ShowAllTrainers();
+                        Pause();
+                        break;
+
+                    case 4:
+                        system.ShowAllBookings();
+                        Pause();
+                        break;
+
+                    case 5:
+                        {
+                            int memberId = ReadInt("Enter Member ID: ");
+                            Member foundMember = system.FindMemberById(memberId);
+                            if (foundMember != null)
+                            {
+                                foundMember.PrintInfo();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Member not found.");
+                            }
+
+                            Pause();
+                            break;
+                        }
+
+                    case 6:
+                        {
+                            int activityId = ReadInt("Enter Activity ID: ");
+                            Activity foundActivity = system.FindActivityById(activityId);
+                            if (foundActivity != null)
+                            {
+                                foundActivity.PrintInfo();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Activity not found.");
+                            }
+
+                            Pause();
+                            break;
+                        }
+
+                    case 7:
+                        {
+                            Console.WriteLine("Add New Member");
+                            string memberType = ReadText("Type (STANDARD/PREMIUM): ").ToUpper();
+                            string memberName = ReadText("Name: ");
+                            string memberEmail = ReadText("Email: ");
+                            string memberJoinDate = ReadText("Join Date (YYYY-MM-DD): ");
+
+                            int nextMemberId = system.MemberCount + 1;
+
+                            if (memberType == "STANDARD")
+                            {
+                                int freezeDays = ReadInt("Freeze Days Used: ");
+                                StandardMember member = new StandardMember(nextMemberId, memberName, memberEmail, memberJoinDate, freezeDays);
+                                system.AddMember(member);
+                                fileManager.SaveMember(member);
+                                Console.WriteLine("Standard member added successfully.");
+                            }
+                            else if (memberType == "PREMIUM")
+                            {
+                                bool hasTrainer = ReadYesNo("Has Personal Trainer? (Y/N): ");
+                                int guestPasses = ReadInt("Guest Passes: ");
+                                PremiumMember member = new PremiumMember(nextMemberId, memberName, memberEmail, memberJoinDate, hasTrainer, guestPasses);
+                                system.AddMember(member);
+                                fileManager.SaveMember(member);
+                                Console.WriteLine("Premium member added successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid member type. Please use STANDARD or PREMIUM.");
+                            }
+
+                            Pause();
+                            break;
+                        }
+
+                    case 8:
+                        {
+                            Console.WriteLine("Add New Activity");
+                            string activityType = ReadText("Type (GROUP/PT): ").ToUpper();
+                            string activityName = ReadText("Name: ");
+                            int activityDuration = ReadInt("Duration (minutes): ");
+                            int activityCapacity = ReadInt("Capacity: ");
+                            int nextActivityId = system.ActivityCount + 1;
+
+                            if (activityType == "GROUP")
+                            {
+                                string instructorName = ReadText("Instructor Name: ");
+                                string difficulty = ReadText("Difficulty Level: ");
+                                GroupClass activity = new GroupClass(nextActivityId, activityName, activityDuration, activityCapacity, instructorName, difficulty);
+                                system.AddActivity(activity);
+                                fileManager.SaveActivity(activity);
+                                Console.WriteLine("Group class added successfully.");
+                            }
+                            else if (activityType == "PT")
+                            {
+                                int trainerId = ReadInt("Trainer ID: ");
+                                double hourlyRate = ReadDouble("Hourly Rate: ");
+                                PersonalTrainingSession activity = new PersonalTrainingSession(nextActivityId, activityName, activityDuration, activityCapacity, trainerId, hourlyRate);
+                                system.AddActivity(activity);
+                                fileManager.SaveActivity(activity);
+                                Console.WriteLine("Personal training session added successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid activity type. Please use GROUP or PT.");
+                            }
+
+                            Pause();
+                            break;
+                        }
+
+                    case 9:
+                        {
+                            Console.WriteLine("Add New Trainer");
+                            int nextTrainerId = system.TrainerCount + 1;
+                            string trainerName = ReadText("Name: ");
+                            string trainerSpecialty = ReadText("Specialty: ");
+                            double trainerSalary = ReadDouble("Salary: ");
+                            Trainer trainer = new Trainer(nextTrainerId, trainerName, trainerSpecialty, trainerSalary);
+                            system.AddTrainer(trainer);
+                            fileManager.SaveTrainer(trainer);
+                            Console.WriteLine("Trainer added successfully.");
+                            Pause();
+                            break;
+                        }
+
+                    case 10:
+                        {
+                            Console.WriteLine("Add New Booking");
+                            int nextBookingId = system.BookingCount + 1;
+                            int memberId = ReadInt("Member ID: ");
+                            int activityId = ReadInt("Activity ID: ");
+                            string bookingDate = ReadText("Date (YYYY-MM-DD): ");
+                            string bookingStatus = ReadText("Status: ");
+                            Booking booking = new Booking(nextBookingId, memberId, activityId, bookingDate, bookingStatus);
+                            system.AddBooking(booking);
+                            fileManager.SaveBooking(booking);
+                            Console.WriteLine("Booking added successfully.");
+                            Pause();
+                            break;
+                        }
+
+                    case 11:
+                        {
+                            double revenue = system.GetProjectedMonthlyRevenue();
+                            Console.WriteLine("Projected monthly revenue: " + revenue.ToString("F2"));
+                            Pause();
+                            break;
+                        }
+
+                    case 0:
+                        isRunning = false;
+                        Console.WriteLine("Goodbye!");
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        Pause();
+                        break;
+                }
+            }
+        }
+    }
+}
+
